@@ -23,8 +23,16 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  String _email , _password;
-  var textEditingController = new TextEditingController();
+  String _email, _password;
+  var textEditingControllerEmail = new TextEditingController();
+  var textEditingControllerPassword = new TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    textEditingControllerEmail.text = 'geeekfa@gmail.com';
+    textEditingControllerPassword.text = '123456';
+  }
+
   void _signin() async {
     try {
       final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -46,7 +54,7 @@ class LoginPageState extends State<LoginPage> {
     );
     if (results != null && results.containsKey('email')) {
       setState(() {
-        textEditingController.text = results['email'];
+        textEditingControllerEmail.text = results['email'];
       });
     }
   }
@@ -63,7 +71,7 @@ class LoginPageState extends State<LoginPage> {
     return new Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: new AppBar(
-        title: new Text("Entertain-Mate1"),
+        title: new Text("Entertain-Mate"),
       ),
       body: Form(
         key: _formKey,
@@ -81,7 +89,7 @@ class LoginPageState extends State<LoginPage> {
                         child: new Column(
                           children: <Widget>[
                             new TextFormField(
-                              controller: textEditingController,
+                              controller: textEditingControllerEmail,
                               decoration: new InputDecoration(
                                 hintText: "Email",
                                 contentPadding: EdgeInsets.all(10.0),
@@ -105,6 +113,7 @@ class LoginPageState extends State<LoginPage> {
                             ),
                             Padding(padding: EdgeInsets.only(bottom: 5.0)),
                             new TextFormField(
+                                controller: textEditingControllerPassword,
                                 obscureText: true,
                                 decoration: new InputDecoration(
                                   hintText: "Password",
@@ -154,7 +163,7 @@ class LoginPageState extends State<LoginPage> {
                                 alignment: Alignment.centerLeft,
                                 child: new FlatButton(
                                   child: const Text('I am New!'),
-                                  textColor: Colors.blue,
+                                  textColor: Colors.purple,
                                   onPressed: () {
                                     _navigateSignup();
                                   },
