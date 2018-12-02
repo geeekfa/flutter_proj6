@@ -38,6 +38,12 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/friends.png
+    - assets/images/a.jpeg
+    - assets/images/b.gif
+    - assets/images/c.png
+    - assets/images/d.jpg
+    - assets/images/e.gif
+    - assets/images/f.png
 
   # The following/ line ensures that the Material Icons font is
   # included with yo/fur application, so that you can use the icons in

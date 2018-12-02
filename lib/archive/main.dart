@@ -1,30 +1,69 @@
 import 'package:flutter/material.dart';
+import '../signup.dart';
+import '../home.dart';
+// import 'auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
-import './modules/dialog/dialog.dart';
+import '../modules/TDialog.dart';
 
-class SignupPage extends StatefulWidget {
+void main() {
+  runApp(MaterialApp(
+    theme: new ThemeData(primaryColor: Colors.blue),
+    home: LoginPage(),
+  ));
+}
+
+class LoginPage extends StatefulWidget {
   @override
-  SignupPageState createState() {
-    return SignupPageState();
+  LoginPageState createState() {
+    return LoginPageState();
   }
 }
 
-class SignupPageState extends State<SignupPage> {
+class LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   String _email, _password;
+  var textEditingControllerEmail = new TextEditingController();
+  var textEditingControllerPassword = new TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    textEditingControllerEmail.text = 'geeekfa@gmail.com';
+    textEditingControllerPassword.text = '123456';
+  }
 
-  void _signup() async {
+  void _signin() async {
     try {
       final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-      FirebaseUser user = await _firebaseAuth.createUserWithEmailAndPassword(
+      FirebaseUser user = await _firebaseAuth.signInWithEmailAndPassword(
           email: _email, password: _password);
-      // String email = user.uid;
-      Navigator.pop(context, {'email': _email});
+      String userId = user.uid;
+      // print(userId);
+      _navigateHome();
     } catch (e) {
       TDialog tDialog = new TDialog(context);
       tDialog.show(e.code, e.message);
     }
+  }
+
+  void _navigateSignup() async {
+    Map results = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SignupPage()),
+    );
+    if (results != null && results.containsKey('email')) {
+      setState(() {
+        textEditingControllerEmail.text = results['email'];
+      });
+    }
+  }
+
+  void _navigateHome() async {
+    Map results = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );
   }
 
   @override
@@ -32,7 +71,7 @@ class SignupPageState extends State<SignupPage> {
     return new Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: new AppBar(
-        title: new Text("Sign up"),
+        title: new Text("Entertain-Mate"),
       ),
       body: Form(
         key: _formKey,
@@ -50,6 +89,7 @@ class SignupPageState extends State<SignupPage> {
                         child: new Column(
                           children: <Widget>[
                             new TextFormField(
+                              controller: textEditingControllerEmail,
                               decoration: new InputDecoration(
                                 hintText: "Email",
                                 contentPadding: EdgeInsets.all(10.0),
@@ -73,6 +113,7 @@ class SignupPageState extends State<SignupPage> {
                             ),
                             Padding(padding: EdgeInsets.only(bottom: 5.0)),
                             new TextFormField(
+                                controller: textEditingControllerPassword,
                                 obscureText: true,
                                 decoration: new InputDecoration(
                                   hintText: "Password",
@@ -98,20 +139,40 @@ class SignupPageState extends State<SignupPage> {
                             new SizedBox(
                                 width: double.infinity,
                                 child: new RaisedButton(
-                                  child: const Text('Sign up'),
+                                  child: const Text('Login'),
                                   color: Theme.of(context).buttonColor,
                                   splashColor: Colors.grey,
                                   onPressed: () {
+                                    // Firestore.instance
+                                    //     .collection('student')
+                                    //     .document('38uZzDzzBTJrw42lWyot')
+                                    //     .get()
+                                    //     .then((documentSnapshot) {
+                                    //   documentSnapshot.data.forEach(
+                                    //       (k, v) => print('${k}: ${v}'));
+                                    // });
+
                                     if (_formKey.currentState.validate()) {
                                       _formKey.currentState.save();
-                                      _signup();
-                                    }
+                                      _signin();
+                                    } else {}
+                                  },
+                                )),
+                            Padding(padding: EdgeInsets.only(bottom: 5.0)),
+                            new Container(
+                                alignment: Alignment.centerLeft,
+                                child: new FlatButton(
+                                  child: const Text('I am New!'),
+                                  textColor: Colors.purple,
+                                  onPressed: () {
+                                    _navigateSignup();
                                   },
                                 )),
                           ],
                         ),
                       ),
                     ),
+                    new Image.asset("assets/images/friends.png")
                   ],
                 ))),
       ),
